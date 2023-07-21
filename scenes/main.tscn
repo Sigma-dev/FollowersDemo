@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://scripts/Input.gd" id="1_yo87f"]
 [ext_resource type="PackedScene" uid="uid://c57bxo3bw5i4k" path="res://scenes/follower.tscn" id="2_v8h0j"]
 
-[node name="Node2D" type="Node2D"]
+[node name="FollowersInput" type="Node2D"]
 position = Vector2(540, 300)
 script = ExtResource("1_yo87f")
 
