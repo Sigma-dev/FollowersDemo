@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://c57bxo3bw5i4k"]
+
+[ext_resource type="Texture2D" uid="uid://fvvyt4ciaxd1" path="res://assets/hlbkfgX.png" id="1_jx84y"]
+[ext_resource type="Script" path="res://scripts/Follower.gd" id="2_rt58p"]
+
+[node name="Follower" type="Sprite2D"]
+texture_filter = 1
+texture = ExtResource("1_jx84y")
+hframes = 9
+vframes = 6
+script = ExtResource("2_rt58p")

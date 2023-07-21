@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3 uid="uid://bv225y7w75m52"]
+
+[ext_resource type="Script" path="res://scripts/Input.gd" id="1_yo87f"]
+[ext_resource type="PackedScene" uid="uid://c57bxo3bw5i4k" path="res://scenes/follower.tscn" id="2_v8h0j"]
+
+[node name="Node2D" type="Node2D"]
+position = Vector2(540, 300)
+script = ExtResource("1_yo87f")
+
+[node name="Follower" parent="." instance=ExtResource("2_v8h0j")]
+
+[node name="Follower2" parent="." instance=ExtResource("2_v8h0j")]
+
+[node name="Follower3" parent="." instance=ExtResource("2_v8h0j")]
+
+[node name="Follower4" parent="." instance=ExtResource("2_v8h0j")]
+
+[node name="Follower5" parent="." instance=ExtResource("2_v8h0j")]
+
+[node name="Follower6" parent="." instance=ExtResource("2_v8h0j")]
+
+[node name="Follower7" parent="." instance=ExtResource("2_v8h0j")]
