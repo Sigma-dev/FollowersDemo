@@ -1,32 +1,70 @@
 extends Sprite2D
-@export var speed = 150
-@export var move_dist = 30
+@export var speed = 150 #Move speed of the follower
+@export var move_dist = 30 #Spacing from the preceding follower
+var last_move = null #Last move of the follower, used to determine if Idle and store their direction
 
-func move(dir: Vector2, delta: float):
+#Called to make the follower move
+func move(dir: Vector2, delta: float) -> void:
 	global_position += dir * speed * delta
-	_set_sprite(dir)
+	var dir_index = _vector_to_dir_index(dir)
+	last_move = MoveInfo.make(dir_index)
+	_set_sprite_from_dir_index(dir_index)
 
-func _process(delta):
-	var index = get_index()
-	if index == 0: 
-		return
-	var next = get_parent().get_child(index - 1)
-	var dist_to_next = global_position.distance_to(next.global_position)
-	if dist_to_next > move_dist:
-		var dir_to_next = global_position.direction_to(next.global_position)
-		move(dir_to_next, delta)
-	pass
+func _process(delta: float) -> void:
+	if get_index() != 0: #No follow logic if the follower is the first
+		_follow_preceding_follower(delta)
+	if last_move && Time.get_ticks_msec() - last_move.time > 50:
+		_set_sprite_from_dir_index(last_move.dir, true)
+
+func _follow_preceding_follower(delta: float) -> void:
+	var preceding = get_parent().get_child(get_index() - 1) #Get sibling node that is one spot higher in hierarchy
+	var dist_to_preceding = global_position.distance_to(preceding.global_position) #Get distance to preceding node
+	if dist_to_preceding > move_dist: #If preceding node is not too close
+		var dir_to_preceding = global_position.direction_to(preceding.global_position) #Get direction to preceding node
+		move(dir_to_preceding, delta) #Move towards preceding node
+
+#Sets the sprite correctly depending on the given direction index
+func _set_sprite_from_dir_index(dir_index: int, idle: bool = false) -> void:
+	var dir_frames = [40, 0, 3, 6, 24, 42, 39, 45, 20] #The texture frames corresponding to the different directions
+	var idle_dir_frames = [41, 1, 4, 7, 25, 43, 40, 46, 19] #The idle texture frames corresponding to the different directions
+	frame = dir_frames[dir_index] if !idle else idle_dir_frames[dir_index] # Choose which frames to use if it is idle or not
+
+#Returns the direction as an index from 0 to 8, mapped as such
+# 1 2 3
+# 8 0 4
+# 7 6 5
+func _vector_to_dir_index(v: Vector2) -> int:
+	if cmp(v.x, 0):
+		if cmp(v.y, 0):
+			return 0
+		elif v.y < 0:
+			return 2
+		else:
+			return 6	
+	elif v.x < 0:
+		if cmp(v.y, 0):
+			return 8 
+		elif v.y < 0:
+			return 1
+		else:
+			return 7
+	else:
+		if cmp(v.y, 0):
+			return 4
+		elif v.y < 0:
+			return 3
+		else:
+			return 5
+
+class MoveInfo:
+	var dir: int = 0
+	var time: int = 0
 	
-func _set_sprite(dir: Vector2):
-	var dir_frames = [[0, 3, 6], [20, 40, 24], [45, 39, 42]]
-	var x_i = 1
-	var y_i = 1
-	if dir.x < 0:
-		x_i = 0
-	if dir.x > 0:
-		x_i = 2
-	if dir.y < 0:
-		y_i = 0
-	if dir.y > 0:
-		y_i = 2
-	frame = dir_frames[y_i][x_i]
+	static func make(dir: int):
+		var move = MoveInfo.new()
+		move.dir = dir
+		move.time = Time.get_ticks_msec()
+		return move
+		
+static func cmp(a: float, b: float, epsilon: float = 0.1) -> bool:
+	return abs(a - b) < epsilon
