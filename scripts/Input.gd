@@ -8,5 +8,6 @@ func get_move_vector() -> Vector2:
 func _process(delta):
 	var move_vector = get_move_vector()
 	var first = get_child(0)
+	var running = Input.is_action_pressed("run")
 	if first && move_vector != Vector2.ZERO: 
-		first.move(move_vector, delta) #Move only the first child from input, the rest will follow on their own
+		first.move(move_vector, delta, running) #Move only the first child from input, the rest will follow on their own
